@@ -12,6 +12,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from io import StringIO
 
 
 def stock_lhb_detail_daily_sina(date: str = "20240222") -> pd.DataFrame:
