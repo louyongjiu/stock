@@ -16,7 +16,7 @@ sys.path.append(cpath)
 log_path = os.path.join(cpath_current, 'log')
 if not os.path.exists(log_path):
     os.makedirs(log_path)
-logging.basicConfig(format='%(asctime)s %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'))
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'), datefmt='%Y-%m-%d %H:%M:%S', encoding='utf-8')
 logging.getLogger().setLevel(logging.INFO)
 import init_job as bj
 import basic_data_daily_job as hdj
@@ -27,6 +27,8 @@ import strategy_data_daily_job as sdj
 import backtest_data_daily_job as bdj
 import klinepattern_data_daily_job as kdj
 import selection_data_daily_job as sddj
+from instock.lib.logger import log_execution_details
+
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -35,7 +37,7 @@ __date__ = '2023/3/10 '
 def main():
     start = time.time()
     _start = datetime.datetime.now()
-    logging.info("######## 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
+    logging.info("######## execute_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
     # 第1步创建数据库
     bj.main()
     # 第2.1步创建股票基础数据表
@@ -58,7 +60,7 @@ def main():
     # # # # 第7步创建股票闭盘后才有的数据
     acdj.main()
 
-    logging.info("######## 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
+    logging.info("######## execute_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

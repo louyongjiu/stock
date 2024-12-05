@@ -7,6 +7,8 @@ import concurrent.futures
 import pandas as pd
 import os.path
 import sys
+import time
+import datetime
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -16,10 +18,10 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 from instock.core.singleton_stock import stock_hist_data
 import instock.core.pattern.pattern_recognitions as kpr
+from instock.lib.logger import log_execution_details
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
-
 
 def prepare(date):
     try:
@@ -55,7 +57,6 @@ def prepare(date):
     except Exception as e:
         logging.error(f"klinepattern_data_daily_job.prepare处理异常：{e}")
 
-
 def run_check(stocks, date=None, workers=40):
     data = {}
     columns = tbs.STOCK_KLINE_PATTERN_DATA['columns']
@@ -80,8 +81,14 @@ def run_check(stocks, date=None, workers=40):
 
 
 def main():
+    start = time.time()
+    _start = datetime.datetime.now()
+    logging.info("######## klinepattern_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
+
     # 使用方法传递。
     runt.run_with_args(prepare)
+
+    logging.info("######## klinepattern_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

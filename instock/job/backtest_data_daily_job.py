@@ -8,6 +8,7 @@ import pandas as pd
 import os.path
 import sys
 import datetime
+import time
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -16,6 +17,7 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.backtest.rate_stats as rate
 from instock.core.singleton_stock import stock_hist_data
+from instock.lib.logger import log_execution_details
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
@@ -40,7 +42,6 @@ def prepare():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for table in tables:
             executor.submit(process, table, stocks_data, date, backtest_column)
-
 
 def process(table, data_all, date, backtest_column):
     table_name = table['name']
@@ -70,7 +71,6 @@ def process(table, data_all, date, backtest_column):
     except Exception as e:
         logging.error(f"backtest_data_daily_job.process处理异常：{table}表{e}")
 
-
 def run_check(stocks, data_all, date, backtest_column, workers=40):
     data = {}
     try:
@@ -95,7 +95,13 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
 
 
 def main():
+    start = time.time()
+    _start = datetime.datetime.now()
+    logging.info("######## backtest_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
+
     prepare()
+
+    logging.info("######## backtest_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

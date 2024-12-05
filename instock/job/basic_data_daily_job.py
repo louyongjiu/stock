@@ -4,6 +4,8 @@
 import logging
 import os.path
 import sys
+import time
+import datetime
 
 cpath_current = os.path.dirname(os.path.dirname(__file__))
 cpath = os.path.abspath(os.path.join(cpath_current, os.pardir))
@@ -13,12 +15,13 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.stockfetch as stf
 from instock.core.singleton_stock import stock_data
-
+from instock.lib.logger import log_execution_details
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
 
 # 股票实时行情数据。
+@log_execution_details
 def save_nph_stock_spot_data(date, before=True):
     if before:
         return
@@ -44,6 +47,7 @@ def save_nph_stock_spot_data(date, before=True):
 
 
 # 基金实时行情数据。
+@log_execution_details
 def save_nph_etf_spot_data(date, before=True):
     if before:
         return
@@ -68,8 +72,14 @@ def save_nph_etf_spot_data(date, before=True):
 
 
 def main():
+    start = time.time()
+    _start = datetime.datetime.now()
+    logging.info("######## basic_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
+
     runt.run_with_args(save_nph_stock_spot_data)
     runt.run_with_args(save_nph_etf_spot_data)
+
+    logging.info("######## basic_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口
