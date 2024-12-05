@@ -408,7 +408,7 @@ def get_indicators(data, end_date=None, threshold=120, calc_threshold=None):
             data = data.tail(n=threshold).copy()
         return data
     except Exception as e:
-        logging.error(f"calculate_indicator.get_indicators处理异常：{data['code']}代码{e}")
+        logging.error(f"calculate_indicator.get_indicators处理异常：{data['code']}代码{e}", exc_info=True)
     return None
 
 
@@ -449,5 +449,5 @@ def get_indicator(code_name, data, stock_column, date=None, calc_threshold=90):
 
         return pd.Series(stock_data_list, index=stock_column)
     except Exception as e:
-        logging.error(f"calculate_indicator.get_indicator处理异常：{code}代码{e} traceback {traceback.print_exc()}")
+        logging.error(f"calculate_indicator.get_indicator处理异常：{code}代码{e}", exc_info=True)
     return None

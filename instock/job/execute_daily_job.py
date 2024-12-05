@@ -16,7 +16,7 @@ sys.path.append(cpath)
 log_path = os.path.join(cpath_current, 'log')
 if not os.path.exists(log_path):
     os.makedirs(log_path)
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'), datefmt='%Y-%m-%d %H:%M:%S', encoding='utf-8')
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', filename=os.path.join(log_path, 'stock_execute_job.log'), datefmt='%Y-%m-%d %H:%M:%S', encoding='utf-8')
 logging.getLogger().setLevel(logging.INFO)
 import init_job as bj
 import basic_data_daily_job as hdj
