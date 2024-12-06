@@ -43,7 +43,7 @@ def save_nph_stock_top_data(date, before=True):
             cols_type = tbs.get_field_types(tbs.TABLE_CN_STOCK_TOP['columns'])
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.save_stock_top_data处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.save_stock_top_data处理异常：{e}", exc_info=True)
     stock_spot_buy(date)
 
 
@@ -84,7 +84,7 @@ def save_nph_stock_fund_flow_data(date, before=True):
 
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.save_nph_stock_fund_flow_data处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.save_nph_stock_fund_flow_data处理异常：{e}", exc_info=True)
 
 @log_execution_details
 def run_check_stock_fund_flow(times):
@@ -99,9 +99,9 @@ def run_check_stock_fund_flow(times):
                     if _data_ is not None:
                         data[_time] = _data_
                 except Exception as e:
-                    logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：代码{e}")
+                    logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：代码{e}", exc_info=True)
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：{e}", exc_info=True)
     if not data:
         return None
     else:
@@ -155,7 +155,7 @@ def stock_sector_fund_flow_data(date, index_sector):
 
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`name`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.stock_sector_fund_flow_data处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.stock_sector_fund_flow_data处理异常：{e}", exc_info=True)
 
 @log_execution_details
 def run_check_stock_sector_fund_flow(index_sector, times):
@@ -170,9 +170,9 @@ def run_check_stock_sector_fund_flow(index_sector, times):
                     if _data_ is not None:
                         data[_time] = _data_
                 except Exception as e:
-                    logging.error(f"basic_data_other_daily_job.run_check_stock_sector_fund_flow处理异常：代码{e}")
+                    logging.error(f"basic_data_other_daily_job.run_check_stock_sector_fund_flow处理异常：代码{e}", exc_info=True)
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.run_check_stock_sector_fund_flow处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.run_check_stock_sector_fund_flow处理异常：{e}", exc_info=True)
     if not data:
         return None
     else:
@@ -200,7 +200,7 @@ def save_nph_stock_bonus(date, before=True):
             cols_type = tbs.get_field_types(tbs.TABLE_CN_STOCK_BONUS['columns'])
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.save_nph_stock_bonus处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.save_nph_stock_bonus处理异常：{e}", exc_info=True)
 
 
 # 基本面选股
@@ -229,7 +229,7 @@ def stock_spot_buy(date):
 
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.stock_spot_buy处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.stock_spot_buy处理异常：{e}", exc_info=True)
 
 
 def main():

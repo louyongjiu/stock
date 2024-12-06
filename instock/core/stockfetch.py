@@ -66,7 +66,7 @@ def fetch_stocks_trade_date():
         data_date = set(data['trade_date'].values.tolist())
         return data_date
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks_trade_date处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks_trade_date处理异常：{e}", exc_info=True)
     return None
 
 
@@ -84,7 +84,7 @@ def fetch_etfs(date):
         data = data.loc[data['new_price'].apply(is_open)]
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_etfs处理异常：{e}")
+        logging.error(f"stockfetch.fetch_etfs处理异常：{e}", exc_info=True)
     return None
 
 
@@ -102,7 +102,7 @@ def fetch_stocks(date):
         data = data.loc[data['code'].apply(is_a_stock)].loc[data['new_price'].apply(is_open)]
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks处理异常：{e}", exc_info=True)
     return None
 
 
@@ -114,7 +114,7 @@ def fetch_stock_selection():
         data.columns = list(tbs.TABLE_CN_STOCK_SELECTION['columns'])
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks_selection处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks_selection处理异常：{e}", exc_info=True)
     return None
 
 
@@ -129,7 +129,7 @@ def fetch_stocks_fund_flow(index):
         data = data.loc[data['code'].apply(is_a_stock)].loc[data['new_price'].apply(is_open_with_line)]
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks_fund_flow处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks_fund_flow处理异常：{e}", exc_info=True)
     return None
 
 
@@ -143,7 +143,7 @@ def fetch_stocks_sector_fund_flow(index_sector, index_indicator):
         data.columns = list(cn_flow['columns'])
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks_sector_fund_flow处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks_sector_fund_flow处理异常：{e}", exc_info=True)
     return None
 
 
@@ -161,7 +161,7 @@ def fetch_stocks_bonus(date):
         data = data.loc[data['code'].apply(is_a_stock)]
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stocks_bonus处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stocks_bonus处理异常：{e}", exc_info=True)
     return None
 
 
@@ -193,7 +193,7 @@ def fetch_stock_top_entity_data(date):
 
         return data_code
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stock_top_entity_data处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stock_top_entity_data处理异常：{e}", exc_info=True)
     return None
 
 
@@ -214,7 +214,7 @@ def fetch_stock_top_data(date):
             data.insert(0, 'date', date.strftime("%Y-%m-%d"))
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stock_top_data处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stock_top_data处理异常：{e}", exc_info=True)
     return None
 
 
@@ -233,10 +233,10 @@ def fetch_stock_blocktrade_data(date):
         data.drop('index', axis=1, inplace=True)
         return data
     except TypeError:
-        logging.error("处理异常：目前还没有大宗交易数据，请17:00点后再获取！")
+        logging.error("处理异常：目前还没有大宗交易数据，请17:00点后再获取！", exc_info=True)
         return None
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stock_blocktrade_data处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stock_blocktrade_data处理异常：{e}", exc_info=True)
     return None
 
 
@@ -264,7 +264,7 @@ def fetch_etf_hist(data_base, date_start=None, date_end=None, adjust='qfq'):
             data["volume"] = data['volume'].values.astype('double') * 100  # 成交量单位从手变成股。
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_etf_hist处理异常：{e}")
+        logging.error(f"stockfetch.fetch_etf_hist处理异常：{e}", exc_info=True)
     return None
 
 
@@ -284,7 +284,7 @@ def fetch_stock_hist(data_base, date_start=None, is_cache=True):
             data["volume"] = data['volume'].values.astype('double') * 100  # 成交量单位从手变成股。
         return data
     except Exception as e:
-        logging.error(f"stockfetch.fetch_stock_hist处理异常：{e}")
+        logging.error(f"stockfetch.fetch_stock_hist处理异常：{e}", exc_info=True)
     return None
 
 
@@ -321,5 +321,5 @@ def stock_hist_cache(code, date_start, date_end=None, is_cache=True, adjust=''):
             # time.sleep(1)
             return stock
     except Exception as e:
-        logging.error(f"stockfetch.stock_hist_cache处理异常：{code}代码{e}")
+        logging.error(f"stockfetch.stock_hist_cache处理异常：{code}代码{e}", exc_info=True)
     return None

@@ -61,7 +61,7 @@ def get_connection():
     try:
         return pymysql.connect(**MYSQL_CONN_DBAPI)
     except Exception as e:
-        logging.error(f"database.conn_not_cursor处理异常：{MYSQL_CONN_DBAPI}{e}")
+        logging.error(f"database.conn_not_cursor处理异常：{MYSQL_CONN_DBAPI}{e}", exc_info=True)
     return None
 
 
@@ -97,7 +97,7 @@ def insert_other_db_from_df(to_db, data, table_name, cols_type, write_index, pri
             data.to_sql(name=table_name, con=engine_mysql, schema=to_db, if_exists='append',
                         dtype=cols_type, index=write_index, )
     except Exception as e:
-        logging.error(f"database.insert_other_db_from_df处理异常：{table_name}表{e}")
+        logging.error(f"database.insert_other_db_from_df处理异常：{table_name}表{e}", exc_info=True)
 
     # 判断是否存在主键
     if not ipt.get_pk_constraint(table_name)['constrained_columns']:
@@ -110,7 +110,7 @@ def insert_other_db_from_df(to_db, data, table_name, cols_type, write_index, pri
                         for k in indexs:
                             db.execute(f'ALTER TABLE `{table_name}` ADD INDEX IN{k}({indexs[k]});')
         except Exception as e:
-            logging.error(f"database.insert_other_db_from_df处理异常：{table_name}表{e}")
+            logging.error(f"database.insert_other_db_from_df处理异常：{table_name}表{e}", exc_info=True)
 
 
 # 更新数据
@@ -151,7 +151,7 @@ def update_db_from_df(data, table_name, where):
                     sql = f'{sql[:-2]}{sql_where}'
                     db.execute(sql)
             except Exception as e:
-                logging.error(f"database.update_db_from_df处理异常：{sql}{e}")
+                logging.error(f"database.update_db_from_df处理异常：{sql}{e}", exc_info=True)
 
 
 # 检查表是否存在
@@ -175,7 +175,7 @@ def executeSql(sql, params=()):
             try:
                 db.execute(sql, params)
             except Exception as e:
-                logging.error(f"database.executeSql处理异常：{sql}{e}")
+                logging.error(f"database.executeSql处理异常：{sql}{e}", exc_info=True)
 
 
 # 查询数据
@@ -186,7 +186,7 @@ def executeSqlFetch(sql, params=()):
                 db.execute(sql, params)
                 return db.fetchall()
             except Exception as e:
-                logging.error(f"database.executeSqlFetch处理异常：{sql}{e}")
+                logging.error(f"database.executeSqlFetch处理异常：{sql}{e}", exc_info=True)
     return None
 
 
@@ -202,5 +202,5 @@ def executeSqlCount(sql, params=()):
                 else:
                     return 0
             except Exception as e:
-                logging.error(f"database.select_count计算数量处理异常：{e}")
+                logging.error(f"database.select_count计算数量处理异常：{e}", exc_info=True)
     return 0

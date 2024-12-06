@@ -34,7 +34,7 @@ class GetDataIndicatorsHandler(webBase.BaseHandler, ABC):
 
             comp_list.append(pk)
         except Exception as e:
-            logging.error(f"dataIndicatorsHandler.GetDataIndicatorsHandler处理异常：{e}")
+            logging.error(f"dataIndicatorsHandler.GetDataIndicatorsHandler处理异常：{e}", exc_info=True)
 
         self.render("stock_indicators.html", comp_list=comp_list,
                     leftMenu=webBase.GetLeftMenu(self.request.uri))

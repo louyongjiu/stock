@@ -55,7 +55,7 @@ def prepare(date):
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
 
     except Exception as e:
-        logging.error(f"klinepattern_data_daily_job.prepare处理异常：{e}")
+        logging.error(f"klinepattern_data_daily_job.prepare处理异常：{e}", exc_info=True)
 
 def run_check(stocks, date=None, workers=40):
     data = {}
@@ -71,9 +71,9 @@ def run_check(stocks, date=None, workers=40):
                     if _data_ is not None:
                         data[stock] = _data_
                 except Exception as e:
-                    logging.error(f"klinepattern_data_daily_job.run_check处理异常：{stock[1]}代码{e}")
+                    logging.error(f"klinepattern_data_daily_job.run_check处理异常：{stock[1]}代码{e}", exc_info=True)
     except Exception as e:
-        logging.error(f"klinepattern_data_daily_job.run_check处理异常：{e}")
+        logging.error(f"klinepattern_data_daily_job.run_check处理异常：{e}", exc_info=True)
     if not data:
         return None
     else:

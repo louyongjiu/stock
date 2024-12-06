@@ -39,7 +39,7 @@ def save_after_close_stock_blocktrade_data(date):
 
         mdb.insert_db_from_df(data, table_name, cols_type, False, "`date`,`code`")
     except Exception as e:
-        logging.error(f"basic_data_other_daily_job.save_stock_blocktrade_data处理异常：{e}")
+        logging.error(f"basic_data_other_daily_job.save_stock_blocktrade_data处理异常：{e}", exc_info=True)
 
 
 def main():

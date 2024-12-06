@@ -77,7 +77,7 @@ def main():
     http_server.listen(port)
 
     print(f"服务已启动，web地址 : http://localhost:{port}/")
-    logging.error(f"服务已启动，web地址 : http://localhost:{port}/")
+    logging.info(f"服务已启动，web地址 : http://localhost:{port}/")
 
     tornado.ioloop.IOLoop.current().start()
 
