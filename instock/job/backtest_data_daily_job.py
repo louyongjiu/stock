@@ -17,13 +17,14 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.backtest.rate_stats as rate
 from instock.core.singleton_stock import stock_hist_data
-from instock.lib.logger import log_execution_details
+from instock.lib.logger import log_execution
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
 
 
 # 股票策略回归测试。
+@log_execution()
 def prepare():
     tables = [tbs.TABLE_CN_STOCK_INDICATORS_BUY, tbs.TABLE_CN_STOCK_INDICATORS_SELL]
     tables.extend(tbs.TABLE_CN_STOCK_STRATEGIES)
@@ -42,7 +43,7 @@ def prepare():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for table in tables:
             executor.submit(process, table, stocks_data, date, backtest_column)
-
+@log_execution()
 def process(table, data_all, date, backtest_column):
     table_name = table['name']
     if not mdb.checkTableIsExist(table_name):
@@ -70,7 +71,7 @@ def process(table, data_all, date, backtest_column):
 
     except Exception as e:
         logging.error(f"backtest_data_daily_job.process处理异常：{table}表{e}", exc_info=True)
-
+@log_execution()
 def run_check(stocks, data_all, date, backtest_column, workers=40):
     data = {}
     try:
@@ -94,14 +95,9 @@ def run_check(stocks, data_all, date, backtest_column, workers=40):
         return data
 
 
+@log_execution(prefix="## ")
 def main():
-    start = time.time()
-    _start = datetime.datetime.now()
-    logging.info("######## backtest_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
-
     prepare()
-
-    logging.info("######## backtest_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

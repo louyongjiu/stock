@@ -1,50 +1,35 @@
-import time
 import logging
-import inspect
+import os.path
 from datetime import datetime
 from functools import wraps
-from contextlib import ContextDecorator
 
-class Timer(ContextDecorator):
-    def __init__(self):
-        self.start_time = None
-        self.end_time = None
-    def __enter__(self):
-        self.start_time = time.perf_counter()
-        return self
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.end_time = time.perf_counter()
-
-    @property
-    def elapsed(self):
-        return self.end_time - self.start_time if self.end_time is not None else 0.0
-
-
-def log_execution_details(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        arg_str = ', '.join(repr(a) for a in args) + ', ' + ', '.join(f"{k}={v!r}" for k, v in kwargs.items())
-        
-        # 获取调用者信息
-        caller_frame = inspect.currentframe().f_back
-        caller_filename = caller_frame.f_code.co_filename
-        caller_lineno = caller_frame.f_lineno
-
-        with Timer() as timer:
-            start_time_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-            logging.info(f"开始执行 {func.__name__}({arg_str}) at {caller_filename}:{caller_lineno} 时间: {start_time_str}")
+def log_execution(include_args=False, prefix=None):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # 获取当前函数的文件名、函数名和行号
+            filename = func.__code__.co_filename
+            lineno = func.__code__.co_firstlineno
+            base_func_name = f"{os.path.basename(filename)}:{lineno}::{func.__name__}"
+            if include_args:
+                arg_str = ', '.join(repr(a) for a in args + 
+                                    tuple(f"{k}={v!r}" for k, v in kwargs.items()))
+                base_func_name += f"({arg_str})"
             
+            # 构造带有前缀的函数名字符串
+            func_name = f"{prefix} {base_func_name}" if prefix else base_func_name
+            
+            timestamp_format = '%Y-%m-%d %H:%M:%S.%f'
+            start_time = datetime.now()
+            logging.info(f"{func_name} 开始: {start_time.strftime(timestamp_format)}")
             try:
                 result = func(*args, **kwargs)
+                end_time = datetime.now()
+                elapsed_time = (end_time - start_time).total_seconds()
+                logging.info(f"{func_name} 完成: {end_time.strftime(timestamp_format)}, 耗时: {elapsed_time:.4f} 秒")
+                return result
             except Exception as e:
-                end_time_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                logging.error(f"执行 {func.__name__}({arg_str}) 失败 at {caller_filename}:{caller_lineno} 时间: {end_time_str}, 耗时: {timer.elapsed:.4f} 秒", exc_info=True)
-                raise e
-            
-            end_time_str = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-            logging.info(f"完成执行 {func.__name__}({arg_str}) at {caller_filename}:{caller_lineno} 时间: {end_time_str}, 耗时: {timer.elapsed:.4f} 秒")
-            
-            return result
-
-    return wrapper
+                logging.error(f"{func_name} 处理异常：{e}", exc_info=True)
+                raise
+        return wrapper
+    return decorator

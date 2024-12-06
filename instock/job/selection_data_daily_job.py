@@ -16,12 +16,12 @@ import instock.lib.run_template as runt
 import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.stockfetch as stf
-from instock.lib.logger import log_execution_details
+from instock.lib.logger import log_execution
 
 __author__ = 'myh '
 __date__ = '2023/5/5 '
 
-@log_execution_details
+@log_execution(include_args=True)
 def save_nph_stock_selection_data(date, before=True):
     if before:
         return
@@ -45,15 +45,9 @@ def save_nph_stock_selection_data(date, before=True):
     except Exception as e:
         logging.error(f"selection_data_daily_job.save_nph_stock_selection_data处理异常：{e}", exc_info=True)
 
-
+@log_execution(prefix="## ")
 def main():
-    start = time.time()
-    _start = datetime.datetime.now()
-    logging.info("######## selection_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
-
     runt.run_with_args(save_nph_stock_selection_data)
-
-    logging.info("######## selection_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

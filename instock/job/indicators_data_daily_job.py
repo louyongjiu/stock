@@ -18,11 +18,11 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 import instock.core.indicator.calculate_indicator as idr
 from instock.core.singleton_stock import stock_hist_data
-from instock.lib.logger import log_execution_details
+from instock.lib.logger import log_execution
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
-
+@log_execution(include_args=True)
 def prepare(date):
     try:
         stocks_data = stock_hist_data(date=date).get_data()
@@ -58,7 +58,7 @@ def prepare(date):
 
     except Exception as e:
         logging.error(f"indicators_data_daily_job.prepare处理异常：{e}", exc_info=True)
-
+@log_execution()
 def run_check(stocks, date=None, workers=40):
     data = {}
     columns = list(tbs.STOCK_STATS_DATA['columns'])
@@ -86,7 +86,7 @@ def run_check(stocks, date=None, workers=40):
 
 # 对每日指标数据，进行筛选。将符合条件的。二次筛选出来。
 # 只是做简单筛选
-@log_execution_details
+@log_execution(include_args=True)
 def guess_buy(date):
     try:
         _table_name = tbs.TABLE_CN_STOCK_INDICATORS['name']
@@ -122,7 +122,7 @@ def guess_buy(date):
 
 
 # 设置卖出数据。
-@log_execution_details
+@log_execution(include_args=True)
 def guess_sell(date):
     try:
         _table_name = tbs.TABLE_CN_STOCK_INDICATORS['name']
@@ -155,19 +155,13 @@ def guess_sell(date):
     except Exception as e:
         logging.error(f"indicators_data_daily_job.guess_sell处理异常：{e}", exc_info=True)
 
-
+@log_execution(prefix="## ")
 def main():
-    start = time.time()
-    _start = datetime.datetime.now()
-    logging.info("######## indicators_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
-
     # 使用方法传递。
     runt.run_with_args(prepare)
     # 二次筛选数据。直接计算买卖股票数据。
     runt.run_with_args(guess_buy)
     runt.run_with_args(guess_sell)
-
-    logging.info("######## indicators_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口

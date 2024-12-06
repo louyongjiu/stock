@@ -17,11 +17,11 @@ import instock.core.tablestructure as tbs
 import instock.lib.database as mdb
 from instock.core.singleton_stock import stock_hist_data
 from instock.core.stockfetch import fetch_stock_top_entity_data
-from instock.lib.logger import log_execution_details
+from instock.lib.logger import log_execution
 
 __author__ = 'myh '
 __date__ = '2023/3/10 '
-
+@log_execution()
 def prepare(date, strategy):
     try:
         stocks_data = stock_hist_data(date=date).get_data()
@@ -54,7 +54,7 @@ def prepare(date, strategy):
 
     except Exception as e:
         logging.error(f"strategy_data_daily_job.prepare处理异常：{strategy}策略{e}", exc_info=True)
-
+@log_execution()
 def run_check(strategy_fun, table_name, stocks, date, workers=40):
     is_check_high_tight = False
     if strategy_fun.__name__ == 'check_high_tight':
@@ -82,18 +82,12 @@ def run_check(strategy_fun, table_name, stocks, date, workers=40):
     else:
         return data
 
-
+@log_execution(prefix="## ")
 def main():
-    start = time.time()
-    _start = datetime.datetime.now()
-    logging.info("######## strategy_data_daily_job 任务执行时间: %s #######" % _start.strftime("%Y-%m-%d %H:%M:%S.%f"))
-
     # 使用方法传递。
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for strategy in tbs.TABLE_CN_STOCK_STRATEGIES:
             executor.submit(runt.run_with_args, prepare, strategy)
-
-    logging.info("######## strategy_data_daily_job 完成任务, 使用时间: %s 秒 #######" % (time.time() - start))
 
 
 # main函数入口
