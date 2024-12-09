@@ -90,18 +90,25 @@ def save_nph_stock_fund_flow_data(date, before=True):
 def run_check_stock_fund_flow(times):
     data = {}
     try:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(times)) as executor:
-            future_to_data = {executor.submit(stf.fetch_stocks_fund_flow, k): k for k in times}
-            for future in concurrent.futures.as_completed(future_to_data):
-                _time = future_to_data[future]
-                try:
-                    _data_ = future.result()
-                    if _data_ is not None:
-                        data[_time] = _data_
-                except Exception as e:
-                    logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：代码{e}", exc_info=True)
+        for k in times :
+            _data = stf.fetch_stocks_fund_flow(k)
+            if _data is not None:
+                data[k] = _data
     except Exception as e:
         logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：{e}", exc_info=True)
+    # try:
+    #     with concurrent.futures.ThreadPoolExecutor(max_workers=len(times)) as executor:
+    #         future_to_data = {executor.submit(stf.fetch_stocks_fund_flow, k): k for k in times}
+    #         for future in concurrent.futures.as_completed(future_to_data):
+    #             _time = future_to_data[future]
+    #             try:
+    #                 _data_ = future.result()
+    #                 if _data_ is not None:
+    #                     data[_time] = _data_
+    #             except Exception as e:
+    #                 logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：代码{e}", exc_info=True)
+    # except Exception as e:
+    #     logging.error(f"basic_data_other_daily_job.run_check_stock_fund_flow处理异常：{e}", exc_info=True)
     if not data:
         return None
     else:
